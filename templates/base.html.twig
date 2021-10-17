@@ -1,0 +1,97 @@
+{# definition d'une variable twig qui permet d'accéder à l'instance de route en cours #}
+{% set maroute = app.request.attributes.get('_route') %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+            <meta charset="UTF-8">
+            <title>{% block title %}Welcome!{% endblock %}</title>
+            {# Run `composer require symfony/webpack-encore-bundle`
+               and uncomment the following Encore helpers to start using Symfony UX #}
+            <link href="{{ asset("css/style.css") }}" rel="stylesheet">
+            <link href="{{ asset("css/styleBtn.scss") }}" rel="stylesheet">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+        {% block stylesheets %}
+            <!-- CSS only -->
+            {#{{ encore_entry_link_tags('app') }}#}
+            <link rel="stylesheet" href="/public/css/bootstrap/bootstrap.min.css">
+        {% endblock %}
+
+
+        {% block javascripts %}
+            <!-- JavaScript Bundle with Popper -->
+            <script src="/public/js/bootstrap/bootstrap.bundle.min.js" defer></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+            <script src="{{ asset("js/fireworks.js") }}"></script>
+            <script src="{{ asset("js/btn.js") }}"></script>
+            {#{{ encore_entry_script_tags('app') }}#}
+        {% endblock %}
+    </head>
+    <body>
+        <div class ="container-fluid">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <img src="{{ asset("img/logo.png") }}" class="imgLogo">
+
+                    <div class="row">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navBar">
+                                {% if is_granted('ROLE_ADMIN') %}
+
+                                    <li class="nav-item" id="nav-item">
+                                        <a class="nav-link {% if maroute == 'accueil' %}active{% endif %}" aria-current="page" {% if maroute == 'accueil' %}style="color:green; font-weight:bold;"{% endif %}  href="{{ path('accueil')}}">Accueil</a>
+                                    </li>
+                                    <li class="nav-item" id="nav-item">
+                                        <a class="nav-link {% if maroute == 'listeProfils' %}active{% endif %}" {% if maroute == 'listeProfils' %}style="color:green; font-weight:bold;"{% endif %} href="{{ path('listeProfils')}}">Profil</a>
+                                    </li>
+
+                                    {# Lien créer un profil uniquement pour la présentation -> désactivé #}
+
+                                    <li class="nav-item" id="nav-item">
+                                        <a class="nav-link {% if maroute == 'app_register' %}active{% endif %}" {% if maroute == 'app_register' %}style="color:green; font-weight:bold;"{% endif %} href="{{ path('app_register')}}" tabindex="-1" >nouveau profil</a>
+                                    </li>
+
+                                    <li class="nav-item" id="nav-item">
+                                        <a class="nav-link {% if maroute == 'admin' %}active{% endif %}" {% if maroute == 'admin' %}style="color:green; font-weight:bold;"{% endif %} href="{{ path('admin')}}" tabindex="-1" >Administrer le site</a>
+                                    </li>
+
+                                    <li class="nav-item" id="nav-item">
+                                        <a class="nav-link" href="{{ path('deconnexion')}}" tabindex="-1" >Me déconnecter</a>
+                                    </li>
+                                {% elseif is_granted('ROLE_EDITOR') or is_granted('ROLE_USER') %}
+                                    <li class="nav-item" id="nav-item">
+                                        <a class="nav-link {% if maroute == 'accueil' %}active{% endif %}" aria-current="page" {% if maroute == 'accueil' %}style="color:green; font-weight:bold;"{% endif %} href="{{ path('accueil')}}">Accueil</a>
+                                    </li>
+                                    <li class="nav-item" id="nav-item">
+                                        <a class="nav-link {% if maroute == 'listeProfils' %}active{% endif %}" {% if maroute == 'listeProfils' %}style="color:green; font-weight:bold;"{% endif %} href="{{ path('listeProfils')}}">Profil</a>
+                                    </li>
+                                    <li class="nav-item" id="nav-item">
+                                        <a class="nav-link" href="{{ path('deconnexion')}}" tabindex="-1" >Me déconnecter</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        {% for label, messages in app.flashes(['success', 'warning', 'danger']) %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {% block body %}{% endblock %}
+
+
+ 
+    </body>
+</html>
+

@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	<link href="{{ asset("css/sortie/sortie.css") }}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Modifier sortie
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<div class="titre">
+			<h1 class="row justify-content-center">Modifier une sortie</h1>
+		</div>
+
+		{{ form_start(sortieForm) }}
+		<div class="form-sortie row justify-content-center">
+			<div class="col-5">
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.nom) }}
+					</div>
+					<div class="col-sm-7">
+						{{ form_widget(sortieForm.nom) }}
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.dateDebut) }}
+					</div>
+					<div class="col-sm-7">
+						{{ form_widget(sortieForm.dateDebut) }}
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.dateCloture) }}
+					</div>
+					<div class="col-sm-7">
+						{{ form_widget(sortieForm.dateCloture) }}
+					</div>
+				</div>
+
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.nbInscriptionMax) }}
+					</div>
+					<div class="col-sm-7">
+						{{ form_widget(sortieForm.nbInscriptionMax) }}
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.duree) }}
+					</div>
+					<div class="col-sm-4">
+						{{ form_widget(sortieForm.duree) }}
+					</div>
+					<div class="col-sm-3">
+						minutes
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.descriptionInfos) }}
+					</div>
+					<div class="col-sm-7">
+						{{ form_widget(sortieForm.descriptionInfos) }}
+					</div>
+				</div>
+			</div>
+			<div class="col-5">
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.siteSortie) }}
+					</div>
+					<div class="col-sm-7">
+						{{ form_widget(sortieForm.siteSortie, { 'attr':{'disabled':'disabled'}}) }}
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.noVille) }}
+					</div>
+					<div class="col-sm-7">
+						{{ form_widget(sortieForm.noVille) }}
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						{{ form_label(sortieForm.noLieu) }}
+					</div>
+					<div class="col-sm-7">
+						{{ form_widget(sortieForm.noLieu) }}
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						Rue :
+					</div>
+					<div class="col-sm-7">
+					<input type="text" class="form-control" id="rue" value="{{ sortie.noLieu.rue }}" disabled>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						Code postal :
+					</div>
+					<div class="col-sm-7">
+					<input type="text" class="form-control" id="codePostal" value="{{ sortie.noVille.getCodePostal() }}" disabled>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						Latitude :
+					</div>
+					<div class="col-sm-7">
+					<input type="text" class="form-control" id="latitude" value="{{ sortie.noLieu.latitude }}" disabled>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-sm-5 col-form-label">
+						Longitude :
+					</div>
+					<div class="col-sm-7">
+					<input type="text" class="form-control" id="longitude" value="{{ sortie.noLieu.longitude }}" disabled>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 text-center">
+
+			{% if sortie.noEtat.libelle == 'Ouverte' %}
+				<a class="btn btn-primary disabled" href="{{ path('publier_sortie', {'id': sortie.id}) }}" title="publier" role="button">Publier la sortie</a>
+				<a class="btn btn-primary" href="{{ path('annuler_sortie', {'id': sortie.id}) }}" title="annulersortie" role="button">Annuler la sortie</a>
+			{% endif %}
+			{% if sortie.noEtat.libelle == 'annulee' %}
+				<a class="btn btn-primary" href="{{ path('publier_sortie', {'id': sortie.id}) }}" title="publier" role="button">Publier la sortie</a>
+				<a class="btn btn-primary disabled" href="{{ path('annuler_sortie', {'id': sortie.id}) }}" title="annulersortie" role="button">Annuler la sortie</a>
+			{% endif %}
+			<button class="btn btn-primary" type="submit" name="modifierSortie">Modifier</button>
+			<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
+				Supprimer la sortie
+			</button>
+			<a class="btn btn-secondary" href="{{ path('accueil') }}" title="annuler" role="button">Annuler</a>
+		</div>
+
+		<!-- Modal de suppression sortie-->
+		<div class="modal fade" id="supprimerModal" tabindex="-1" aria-labelledby="supprimerModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="supprimerModalLabel">Confirmation</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						Voulez-vous supprimer la sortie ?
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-danger" href="{{ path('supprimer_sortie', {'id': sortie.id}) }}" title="supprimersortie" role="button">Valider</a>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- fin Modal de suppression -->
+	{{ form_end(sortieForm) }}
+
+</div>{% endblock %}

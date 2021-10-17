@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+{% block title %}Sortir.com - Profil{% endblock %}
+{% block body %}
+
+    <div class="container">
+        <h1>Visualiser Profil</h1>
+
+        {# Affichage du profil de l'utilisateur connecté. #}
+        <div class="list-group">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card mb-3 mt-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4 pe-2">
+                                <h2 class="h3 card-title pt-2">{{ app.user.pseudo }}</h2>
+                                <figure>
+                                    <img src="{{ vich_uploader_asset(app.user,'imageFile')}}"
+                                         class="img-fluid"
+                                         alt="photoProfil"
+                                         style="
+                                            border-color: grey;
+                                            border-style: solid;
+                                            border-width: 1px;">
+                                </figure>
+                            </div>
+                            <div class="col-md-8 card ">
+                                <div class="card-body">
+                                    <h3 class="h5 card-text"
+                                        style="color: dimgrey;">
+                                        {% for role in app.user.roles %}
+                                            {% if       role  == "ROLE_ADMIN" %}
+                                                <i class="fas fa-user-astronaut pe-1"></i>
+                                                Administrateur
+                                            {% elseif   role  == "ROLE_EDITOR"%}
+                                                <i class="fas fa-user-nurse pe-1"></i>
+                                                Organisateur
+                                            {% elseif   role  == "ROLE_USER" %}
+                                                <i class="fas fa-user pe-1"></i>
+                                                Participant
+                                            {% endif %}
+                                        {% endfor %}
+                                    </h3>
+                                    <p class="card-text"><strong>Nom : </strong>{{ app.user.nom }}</p>
+                                    <p class="card-text"><strong>Prénom : </strong>{{ app.user.prenom }}</p>
+                                    <p class="card-text"><strong>Téléphone : </strong>{{ app.user.telephone }}</p>
+                                    <p class="card-text"><strong>Mail : </strong>{{ app.user.mail }}</p>
+                                    <a href="{{ path('mot-de-passe-oublie') }}" class="btn btn-primary">
+                                        <i class="fas fa-key pe-1"></i>
+                                        Réinitialiser mon mot de passe
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    {# Tableau qui permet d'affichet et de consulter le profil des autres utilisateurs #}
+                    <div class="block">
+                        <table class="table table-striped table-bordered table-hover">
+                            <caption class="caption-top">Liste des profils enregistrés</caption>
+
+                            <thead>
+                            <tr>
+                                <th>Pseudo</th>
+                                <th>Rôle</th>
+                                <th>Ville</th>
+                            </tr>
+                            </thead>
+                            {% for profil in profils %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ path('afficherProfil', {'id': profil.id}) }}">
+                                            <span>{{ profil.pseudo }}</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                            <span>
+                                {% for role in profil.roles %}
+                                    {% if       role  == "ROLE_ADMIN" %}
+                                        <p style="text-align: left;"
+                                            class="pb-0 pt-0">
+                                            <i class="fas fa-user-astronaut pe-1"></i>
+                                            Administrateur
+                                        </p>
+                                    {% elseif   role  == "ROLE_EDITOR"%}
+                                        <p style="text-align: left;"
+                                           class="pb-0 pt-0">
+                                            <i class="fas fa-user-nurse pe-1"></i>
+                                            Organisateur
+                                        </p>
+                                    {% elseif   role  == "ROLE_USER" %}
+                                        <p style="text-align: left;"
+                                           class="pb-0 pt-0">
+                                            <i class="fas fa-user pe-1"></i>
+                                            Participant
+                                        </p>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                                    </td>
+                                    <td>
+                            <span>
+                                {{ profil.siteParticipant.nom }}
+                            </span>
+                                    </td>
+                                </tr>
+                            {%  endfor %}
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    <div>
+
+{% endblock %}

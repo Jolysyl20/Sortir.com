@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Sortir.com - Modifier Profil{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        <div>
+            <form action="{{ path('sauverProfil',{'id': profil.id}) }}" method="POST">
+                {#
+                AFFICHAGE DE CHAMPS DIFFERENT EN FONCTION DU ROLE DE L'UTILISATEUR
+                Si l'utilisateur est connecté en tant qu'Administrateur
+                --> champs des inputs désactivés par défaut
+                --> activations de la modification des valeurs des inputs si clic sur le bouton modifer.
+                #}
+                <div class="block-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <h1 class="row justify-content-center">Modifier Profil - {{ field_value(profilForm.pseudo) }}</h1>
+                            <h2 class="h4 row justify-content-center">
+                                {% for role in profil.roles %}
+                                    {% if       role  == "ROLE_ADMIN" %}
+                                    <p style="  text-align: center;
+                                                color:grey;" >
+                                        <i class="fas fa-user-astronaut pe-1"></i>
+                                        Administrateur
+                                    </p>
+                                    {% elseif   role  == "ROLE_EDITOR"%}
+                                        <p style="  text-align: center;
+                                                    color:grey;" >
+                                            <i class="fas fa-user-nurse pe-1"></i>
+                                            Organisateur
+                                        </p>
+                                    {% elseif   role  == "ROLE_USER" %}
+                                        <p style="  text-align: center;
+                                                    color:grey;" >
+                                            <i class="fas fa-user pe-1"></i>
+                                            Participant
+                                        </p>
+                                    {% endif %}
+                                {% endfor %}
+                            </h2>
+
+                            {# Photo de profil #}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <figure style="text-align:center">
+                                    <img src="{{ vich_uploader_asset(profil,'imageFile')}}"
+                                         class="img-fluid"
+                                         alt="photoProfil"
+                                         style="
+                                        margin-top:10px;
+                                        width: 300px;
+                                        border-color: grey;
+                                        border-style: solid;
+                                        border-width: 1px;">
+                                </figure>
+                            {% endif %}
+
+                            {# Bouton Supprimer et modifier photo de profil #}
+                            <div style="text-align:center;">
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a  href="#"
+                                        class="btn btn-primary btn-secondary"
+                                    >
+                                        <i class="fas fa-camera pe-1"></i>
+                                        Changer la photo
+                                    </a>
+                                {% endif %}
+
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a  href="{{ path('supprimerProfil',{'id': profil.id})}}"
+                                        class="btn btn-primary btn-danger"
+                                    >
+                                        <i class="fas fa-trash pe-1"></i>
+                                        Supprimer l'utilisateur
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-6 pt-4">
+                            {# Pseudo #}
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <div class="mb-3 form-floating">
+                                <input type="text"
+                                       name="pseudo"
+                                       id="pseudo"
+                                       value="{{ field_value(profilForm.pseudo)}}"
+                                       placeholder="Pseudo"
+                                       class="form-control">
+                                <label  for="pseudo"> Pseudo</label>
+                            </div>
+                            {% endif %}
+
+                            {# Nom #}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="mb-3 form-floating">
+                                    <input  type="text"
+                                            name="nom"
+                                            id="nom"
+                                            value="{{ field_value(profilForm.nom) }}"
+                                            placeholder="Nom"
+                                            class="form-control">
+                                    <label  for="nom"> Nom</label>
+                                </div>
+                            {% endif %}
+
+                            {# Prénom #}
+                            {% if is_granted('ROLE_ADMIN')  %}
+                                <div class="mb-3 form-floating">
+                                    <input  type="text"
+                                            id="prenom"
+                                            name="prenom"
+                                            value="{{ field_value(profilForm.prenom) }}"
+                                            placeholder="Prénom"
+                                            class="form-control">
+                                    <label  for="prenom"> Prénom</label>
+                                </div>
+                            {% endif %}
+
+                            {# Téléphone #}
+                            {% if is_granted('ROLE_ADMIN')  %}
+                                <div class="mb-3 form-floating">
+                                    <input  type="text"
+                                            id="telephone"
+                                            name="telephone"
+                                            value="{{ field_value(profilForm.telephone) }}"
+                                            placeholder="Téléphone"
+                                            class="form-control">
+                                    <label  for="telephone"> Téléphone</label>
+                                </div>
+                            {% endif %}
+
+                            {# Mail #}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="mb-3 form-floating">
+                                    <input  type="text"
+                                            id="mail"
+                                            name="mail"
+                                            value="{{ field_value(profilForm.mail) }}"
+                                            placeholder="mail"
+                                            class="form-control">
+                                    <label  for="mail"> Mail</label>
+                                </div>
+                            {% endif %}
+
+                            {# Site #}
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <div class="mb-3 form-floating">
+                                <input  type="text"
+                                        id="site"
+                                        name="site"
+                                        value="{{ profil.siteParticipant.nom }}"
+                                        placeholder="Site"
+                                        class="form-control">
+                                <label  for="site"> Site</label>
+                            </div>
+                            {% endif %}
+
+                            {# Mot de passe #}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="mb-3 form-floating">
+                                    <input  type="password"
+                                            id="motDePasse"
+                                            name="motDePasse"
+                                            value="{{ profil.password }}"
+                                            placeholder="motDePasse"
+                                            class="form-control">
+                                    <label  for="motDePasse"> Mot de Passe</label>
+                                </div>
+                            {% endif %}
+
+                            {# Boutons retour, modifier, enregistrer #}
+                            <div class="mt-3" style="text-align:right">
+                                <a href="{{ path('afficherProfil',{'id': profil.id})}}"
+                                   class="btn btn-primary btn-primary">
+                                    <i class="fas fa-arrow-alt-circle-left pe-1"></i>
+                                    Retour
+                                </a>
+
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <button class="btn btn-success">
+                                        <i class="fas fa-save pe-1"></i>
+                                        Enregistrer
+                                    </button>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
