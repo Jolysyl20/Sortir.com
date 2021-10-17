@@ -1,6 +1,0 @@
-framework:
-    mailer:
-        dsn: '%env(MAILER_DSN)%'
-        headers:
-            from: 'Enrick <contact@sortir.com>'
-
